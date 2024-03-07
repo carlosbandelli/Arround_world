@@ -1,5 +1,10 @@
 export interface CountryData {
-  name: string;
+  index: string;
+  name: {
+    common: string;
+    official: string;
+
+  };
   translations: {
     por: {
       official: string;

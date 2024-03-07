@@ -1,9 +1,14 @@
 import { CountryData } from "../Types/types";
 import { getCountryData } from "./api";
+import { v4 as uuidv4 } from 'uuid';
 
-export function mapApiDataToCountryData(apiData: CountryData): CountryData {
+ function mapApiDataToCountryData(apiData: CountryData): CountryData {
   return {
-    name: apiData.name || '',
+    index: uuidv4(),
+    name: {
+      common: apiData.name.common || '',
+      official: apiData.name.official || '',
+    },
     translations: {
       por: {
         official: apiData.translations.por.official || '',
@@ -27,22 +32,71 @@ export function mapApiDataToCountryData(apiData: CountryData): CountryData {
   };
 }
 
-
-export const fetchCountryData = async (name: string): Promise<CountryData | null> => {
+export const fetchCountryData = async (countryName: string): Promise<CountryData | null> => {
   try {
-    const response = await getCountryData(name);
+    const response = await getCountryData(countryName);
+
     if (response && response.data) {
-      console.log(response.data);
       const countryData = mapApiDataToCountryData(response.data[0]);
       return countryData;
     }
+
+    const countryNameVariants = generateCountryNameVariants(countryName);
+    for (const variant of countryNameVariants) {
+      const variantResponse = await getCountryData(variant);
+      if (variantResponse && variantResponse.data) {
+        const countryData = mapApiDataToCountryData(variantResponse.data[0]);
+        return countryData;
+      }
+    }
+
     return null;
   } catch (error) {
     console.error('Erro ao buscar dados do país:', error);
     return null;
-
   }
-}
+};
+
+export const generateCountryNameVariants = (countryName: string): string[] => {
+  const normalizedCountryName = normalizeCountryName(countryName);
+  const variants = [normalizedCountryName];
+  for (let i = 0; i < normalizedCountryName.length; i++) {
+    const char = normalizedCountryName[i];
+    if (char.toUpperCase() !== char.toLowerCase()) {
+      const accentedChars = getAccentedChars(char);
+      for (const accentedChar of accentedChars) {
+        const variant = normalizedCountryName.substring(0, i) + accentedChar + normalizedCountryName.substring(i + 1);
+        variants.push(variant);
+      }
+    }
+  }
+  return variants;
+};
+
+const getAccentedChars = (char: string): string[] => {
+  switch (char.toLowerCase()) {
+    case 'a':
+      return ['á', 'à', 'â', 'ä', 'ã', 'å', 'æ'];
+    case 'e':
+      return ['é', 'è', 'ê', 'ë'];
+    case 'i':
+      return ['í', 'ì', 'î', 'ï'];
+    case 'o':
+      return ['ó', 'ò', 'ô', 'ö', 'õ', 'ø'];
+    case 'u':
+      return ['ú', 'ù', 'û', 'ü'];
+    case 'c':
+      return ['ç'];
+    default:
+      return [char];
+  }
+};
+
+
+export const normalizeCountryName = (countryName: string): string => {
+  return countryName.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+};
+
 
   export function removeAspas(url: string): string {
   return url.replace(/['"]+/g, '');
