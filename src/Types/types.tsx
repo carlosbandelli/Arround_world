@@ -1,19 +1,18 @@
 export interface CountryData {
-  name: any;
-  translations:{
+  name: string;
+  translations: {
     por: {
       official: string;
-      common: string
-    }
-  },
-
-  ccn3: string,
-
+      common: string;
+    };
+  };
+  ccn3: string;
   capital: string[];
   population: number;
   currencies: {
     [key: string]: {
       name: string;
+      symbol: string
     };
   };
   languages: {
@@ -22,10 +21,11 @@ export interface CountryData {
   flags: {
     png: string;
     svg: string;
-    alt: string
-  }
+    alt: string;
+  };
   maps: {
     googleMaps: string;
     openStreetMaps: string;
-  }
+  };
 }
+
