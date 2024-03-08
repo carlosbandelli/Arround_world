@@ -1,4 +1,3 @@
-import React from 'react';
 import { icons } from 'lucide-react';
 
 interface ButtonProps {

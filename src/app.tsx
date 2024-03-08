@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-
 import { fetchCountryData, generateCountryNameVariants, normalizeCountryName } from './Services/functions';
+import { ExportCSVButton } from './Services/convertcsv';
+
 import { Table } from './Components/Table';
 import { CountryData } from './Types/types';
 import { Header } from './Components/Header';
@@ -30,27 +31,36 @@ export function App() {
     window.open(link, '_blank');
   };
 
+
 const handleExecuteAgain = async (countryName: string) => {
   try {
     setLoading(true);
     setApiError(false);
-    const normalizedCountryName = normalizeCountryName(countryName);
-    const countryNameVariants = generateCountryNameVariants(normalizedCountryName);
 
-    let countryToAdd: CountryData | null = null;
+    let countryToUpdateIndex: number = -1;
 
-    for (const variant of countryNameVariants) {
-      const response = await fetchCountryData(variant);
-      if (response) {
-        countryToAdd = response;
+    for (let i = 0; i < searchHistory.length; i++) {
+      const country = searchHistory[i];
+      if (country.name.official === countryName) {
+        countryToUpdateIndex = i;
         break;
       }
     }
 
-    if (countryToAdd) {
-      const newCountry = { ...countryToAdd, id: uuidv4() };
+    if (countryToUpdateIndex !== -1) {
+      const newUuid = uuidv4();
 
-      setSearchHistory(prevSearchHistory => [...prevSearchHistory, newCountry]);
+      setSearchHistory(prevSearchHistory => {
+        const updatedSearchHistory = [...prevSearchHistory];
+        updatedSearchHistory[countryToUpdateIndex] = {
+          ...updatedSearchHistory[countryToUpdateIndex],
+          index: newUuid
+        };
+        updatedSearchHistory.push({
+          ...searchHistory[countryToUpdateIndex],
+         });
+        return updatedSearchHistory;
+      });
     }
   } catch (error) {
     console.error('Erro ao buscar informações do país:', error.message);
@@ -89,7 +99,7 @@ const handleExecuteAgain = async (countryName: string) => {
         console.error('Erro: País não encontrado.');
       }
     } catch (error) {
-      console.error('Erro ao buscar informações do país:', error.message);
+      console.error('Erro ao buscar informações do país:', error);
       setApiError(true);
     } finally {
       setLoading(false);
@@ -116,6 +126,7 @@ const handleExecuteAgain = async (countryName: string) => {
   }, []);
 
   useEffect(() => {
+    console.log(searchHistory)
     localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
   }, [searchHistory]);
 
@@ -132,6 +143,8 @@ const handleExecuteAgain = async (countryName: string) => {
             iconSize={20}
             className='px-4 py-2 bg-green-700 text-white rounded-md inline-block mr-2 hover:opacity-75'
           />
+          <ExportCSVButton searchHistory={searchHistory} />
+
         </Form>
         <div>
           <Title level="h2" title="Histórico de Consultas" />

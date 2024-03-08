@@ -1,6 +1,7 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { CountryData } from "../Types/types";
 import { getCountryData } from "./api";
-import { v4 as uuidv4 } from 'uuid';
 
  function mapApiDataToCountryData(apiData: CountryData): CountryData {
   return {
@@ -105,6 +106,8 @@ export const normalizeCountryName = (countryName: string): string => {
 export function formatarPopulacao(populacao: number): string {
   return populacao.toLocaleString('pt-BR');
 }
+
+
 
 
 
