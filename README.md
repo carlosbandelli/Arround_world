@@ -67,6 +67,17 @@ git clone https://github.com/carlosbandelli/Arround_world.git
 ```
 ### 📺 FRONT-END:
 
+Se voce não tiver PNPM instaldo em sua maquina rode o comando
+```
+pnpm install -g pnpm
+```
+
+para verificar se foi instalado use o comando
+
+```
+pnpm -v
+```
+
 Abra um terminal direto da pasta raiz a pasta SRC e execute o comando no terminal
 
 ```
