@@ -5,7 +5,7 @@ interface TitleProps {
 }
 
 export function Title({ level, title, classTitle }: TitleProps) {
-  const defaultClassName = "font-bold text-center";
+  const defaultClassName = "font-bold text-center text-3xl";
   const HeadingTag = level;
 
   return (

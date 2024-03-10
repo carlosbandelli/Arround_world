@@ -53,7 +53,7 @@ export const fetchCountryData = async (countryName: string): Promise<CountryData
 
     return null;
   } catch (error) {
-    console.error('Erro ao buscar dados do país:', error);
+    //console.error('Erro ao buscar dados do país:', error);
     return null;
   }
 };

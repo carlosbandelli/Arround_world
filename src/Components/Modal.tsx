@@ -24,7 +24,7 @@ export interface ModalProps {
 
 export function Modal({ title, body, onCancel, onConfirm, textButton1, textButton2, className1, className2, iconName1, iconName2, iconSize1, iconSize2, iconColor1, iconColor2, iconClass1, iconClass2, divButton}: ModalProps) {
   const defaultClassName1 = "mr-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-  const defaultClassName2 = "mr-4 px-4 py-2 bg-indigo-800 text-white rounded hover:bg-red-600"
+  const defaultClassName2 = "mr-4 px-4 py-2 bg-indigo-800 text-white rounded hover:animate-pulse-slow"
   const defaultClassDivButton = "flex justify-end"
   return (
     <div className="fixed inset-0 flex items-center justify-center text-indigo-950 bg-gray-800 bg-opacity-50 z-50">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Button } from '../Components/Button';
 import { Modal } from '../Components/Modal';
@@ -96,7 +96,7 @@ export function ExportCSVButton({ searchHistory }: ExportCSVButtonProps) {
         type={'button'}
         text={'Download .xlsx'}
         iconName='FileDown'
-        className='px-4 py-2 bg-lime-500 text-white rounded-md hover:animate-bounce'
+        className='px-4 py-2 bg-lime-500 text-white rounded-md hover:animate-pulse-slow'
         onClick={convertToCSV}
       />
       {showEmptyListModal && (

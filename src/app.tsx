@@ -12,7 +12,8 @@ import { Form } from './Components/Form';
 import { Loading } from './Components/Loading';
 import { Input } from './Components/Input';
 import { Button } from './Components/Button';
-
+import { CountryCardContainer } from './Components/CountryCardContainer';
+import { PanelsTopLeft, SquareAsterisk } from 'lucide-react';
 
 export function App() {
   const [countryName, setCountryName] = useState('');
@@ -20,8 +21,7 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(false);
   const [offline, setOffline] = useState(false);
-
-
+  const [viewMode, setViewMode] = useState<'Table' | 'Card'>('Table');
 
   const handleCountryNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCountryName(event.target.value);
@@ -29,6 +29,10 @@ export function App() {
 
   const openGoogleMapsLink = (link: string) => {
     window.open(link, '_blank');
+  };
+
+  const handleToggleViewMode = (mode: 'Table' | 'Card') => {
+    setViewMode(mode);
   };
 
 
@@ -63,7 +67,7 @@ const handleExecuteAgain = async (countryName: string) => {
       });
     }
   } catch (error) {
-    console.error('Erro ao buscar informações do país:', error.message);
+    //console.error('Erro ao buscar informações do país:', error);
     setApiError(true);
   } finally {
     setLoading(false);
@@ -96,10 +100,10 @@ const handleExecuteAgain = async (countryName: string) => {
       }
 
       if (!foundExactMatch && !countryNameVariants.includes(normalizedCountryName)) {
-        console.error('Erro: País não encontrado.');
+        //console.error('Erro: País não encontrado.');
       }
     } catch (error) {
-      console.error('Erro ao buscar informações do país:', error);
+      //console.error('Erro ao buscar informações do país:', error);
       setApiError(true);
     } finally {
       setLoading(false);
@@ -126,11 +130,10 @@ const handleExecuteAgain = async (countryName: string) => {
   }, []);
 
   useEffect(() => {
-    console.log(searchHistory)
     localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
   }, [searchHistory]);
 
-  return (
+   return (
     <div className="py-10 space-y-8">
       <Header title="Consulta de Informações de Países"/>
       <main className="max-w-6xl mx-auto space-y-5">
@@ -146,9 +149,17 @@ const handleExecuteAgain = async (countryName: string) => {
           <ExportCSVButton searchHistory={searchHistory} />
 
         </Form>
+        <div className="flex items-center justify-center">
+          <Title level="h1" title="Histórico de Consultas"  />
+          <div className="flex items-center m-2 space-x-4">
+            <PanelsTopLeft size={24} className="cursor-pointer hover:animate-bounce-slow" onClick={() => handleToggleViewMode('Table')} />
+            <SquareAsterisk size={24} className="cursor-pointer hover:animate-bounce-slow" onClick={() => handleToggleViewMode('Card')} />
+          </div>
+        </div>
         <div>
-          <Title level="h2" title="Histórico de Consultas" />
-          {loading ? <Loading iconName='Loader' iconSize={50}/> : (offline ? <p>Você está offline. Por favor, verifique sua conexão com a internet.</p> : (apiError ? <p>A API não está respondendo. Tente novamente mais tarde.</p> : <Table countries={searchHistory} onExecuteAgain={handleExecuteAgain} openGoogleMapsLink={openGoogleMapsLink} />))}
+          {loading ? <Loading iconName='Loader' iconSize={50}/> : (offline ? <p>Você está offline. Por favor, verifique sua conexão com a internet.</p> : (apiError ? <p>A API não está respondendo. Tente novamente mais tarde.</p> : (
+            viewMode === 'Table' ? <Table countries={searchHistory} onExecuteAgain={handleExecuteAgain} openGoogleMapsLink={openGoogleMapsLink} /> : <CountryCardContainer countries={searchHistory} onExecuteAgain={handleExecuteAgain} openGoogleMapsLink={openGoogleMapsLink} />
+          )))}
         </div>
       </main>
     </div>
