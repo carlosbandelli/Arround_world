@@ -67,7 +67,7 @@ git clone https://github.com/carlosbandelli/Arround_world.git
 ```
 ### 📺 FRONT-END:
 
-Abra um terminal direto da pasta raiz e execute o comando no terminal
+Abra um terminal direto da pasta raiz a pasta SRC e execute o comando no terminal
 
 ```
 pnpm install
@@ -84,7 +84,7 @@ REACT_APP_BASE_URL=https://restcountries.com/v3.1/
 
 ```
 
- Nesta parte apos instalar as dependencia, abra um terminal direta da pasta src e utilize o comando:
+ Nesta parte apos instalar as dependencia, abra um terminal direta da pasta SRC e utilize o comando:
  
  ```
  pnpm run dev
