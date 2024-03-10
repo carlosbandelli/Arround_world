@@ -14,6 +14,7 @@ import { Input } from './Components/Input';
 import { Button } from './Components/Button';
 import { CountryCardContainer } from './Components/CountryCardContainer';
 import { PanelsTopLeft, SquareAsterisk } from 'lucide-react';
+import { Modal } from './Components/Modal';
 
 export function App() {
   const [countryName, setCountryName] = useState('');
@@ -22,6 +23,7 @@ export function App() {
   const [apiError, setApiError] = useState(false);
   const [offline, setOffline] = useState(false);
   const [viewMode, setViewMode] = useState<'Table' | 'Card'>('Table');
+  const [showEmptyFieldModal, setShowEmptyFieldModal] = useState(false);
 
   const handleCountryNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCountryName(event.target.value);
@@ -76,8 +78,13 @@ const handleExecuteAgain = async (countryName: string) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     if (!navigator.onLine) {
       setOffline(true);
+      return;
+    }
+     if (!countryName.trim()) {
+      setShowEmptyFieldModal(true);
       return;
     }
     try {
@@ -161,6 +168,15 @@ const handleExecuteAgain = async (countryName: string) => {
             viewMode === 'Table' ? <Table countries={searchHistory} onExecuteAgain={handleExecuteAgain} openGoogleMapsLink={openGoogleMapsLink} /> : <CountryCardContainer countries={searchHistory} onExecuteAgain={handleExecuteAgain} openGoogleMapsLink={openGoogleMapsLink} />
           )))}
         </div>
+        {showEmptyFieldModal && (
+          <Modal
+            title="Campo Vazio!"
+            body="Você precisa preencher o campo para efetuar a busca"
+            textButton2="OK"
+            onConfirm={() => setShowEmptyFieldModal(false)}
+            className1='none'
+          />
+        )}
       </main>
     </div>
   );
